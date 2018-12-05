@@ -25,7 +25,7 @@
 
   tocid_str = tocid_str.padEnd(800, '0');
 
-  const tocid_hash = await crypto.subtle.digest('SHA-1', (new TextEncoder()).encode(tocid_str));
+  const tocid_hash = await crypto.subtle.digest('SHA-1', new TextEncoder().encode(tocid_str));
   const tocid = btoa(String.fromCharCode(...new Uint8Array(tocid_hash))).replace(/\+/g, '.').replace(/\//g, '_').replace(/=/g, '-');
 
   const a = document.createElement('a');
