@@ -7,7 +7,7 @@
 // @run-at       end
 // ==/UserScript==
 
-(async function() {
+(async () => {
   const fields = document.querySelectorAll('#page table:first-of-type tr');
   let trackoffsets = fields[0].querySelector('td').textContent.trim().split(/\W+/);
   const firstaudio = trackoffsets.shift()|0;
