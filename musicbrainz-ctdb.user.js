@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         MusicBrainz CTDB Links
 // @description  Add links to CTDB disc IDs on MusicBrainz CDTOC pages.
-// @version      0.1
+// @version      0.2
 // @include      https://musicbrainz.org/cdtoc/*
 // @grant        none
 // @run-at       end
@@ -9,9 +9,9 @@
 
 (async () => {
   const fields = document.querySelectorAll('#page table:first-of-type tr');
-  let trackoffsets = fields[0].querySelector('td').textContent.trim().split(/\W+/);
-  const firstaudio = trackoffsets.shift()|0;
-  const numtracks = trackoffsets.shift()|0;
+  let trackoffsets = fields[0].querySelector('td').textContent.trim().split(/\W+/).map(n => parseInt(n, 10));
+  const firstaudio = trackoffsets.shift();
+  const numtracks = trackoffsets.shift();
   const last_sample = trackoffsets.shift();
   trackoffsets.push(last_sample);
   trackoffsets = trackoffsets.map(s => s - 150);
@@ -34,7 +34,7 @@
 
   const tr = document.createElement('tr');
   const th = document.createElement('th');
-  th.textContent = 'CTDB Disc ID:';
+  th.textContent = 'CTDB:';
   tr.appendChild(th);
   const td = document.createElement('td');
   td.appendChild(a);
