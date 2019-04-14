@@ -1,7 +1,8 @@
 // ==UserScript==
 // @name         MusicBrainz CTDB Links
 // @description  Add links to CTDB disc IDs on MusicBrainz CDTOC pages.
-// @version      0.2
+// @version      0.3
+// @include      https://beta.musicbrainz.org/cdtoc/*
 // @include      https://musicbrainz.org/cdtoc/*
 // @grant        none
 // @run-at       end
