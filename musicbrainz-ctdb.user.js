@@ -1,9 +1,9 @@
 // ==UserScript==
 // @name         MusicBrainz CTDB Links
 // @description  Add links to CTDB disc IDs on MusicBrainz CDTOC pages.
-// @version      0.4
-// @include      https://beta.musicbrainz.org/cdtoc/*
-// @include      https://musicbrainz.org/cdtoc/*
+// @version      0.5
+// @match        https://beta.musicbrainz.org/cdtoc/*
+// @match        https://musicbrainz.org/cdtoc/*
 // @grant        none
 // @run-at       end
 // ==/UserScript==
@@ -45,7 +45,7 @@ function tocidElement(tocid, enhanced) {
   trackoffsets.push(last_sample);
   trackoffsets = trackoffsets.map(s => s - 150);
   const pregap = trackoffsets.shift();
-  
+
   const normal_tocid = await tocid(trackoffsets, pregap);
   const enhanced_tocid = await tocid(trackoffsets.slice(1), pregap + trackoffsets[0]);
 
