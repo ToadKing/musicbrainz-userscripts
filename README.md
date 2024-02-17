@@ -1,2 +1,2 @@
-# musicbrainz-ctdb
-Musicbrainz CTDB userscript
+# musicbrainz-userscripts
+Various userscripts for MusicBrainz
