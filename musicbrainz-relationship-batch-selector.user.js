@@ -1,9 +1,10 @@
 // ==UserScript==
-// @name        MusicBrainz Relationship batch selector
+// @name        MusicBrainz: Relationship Batch Selector
 // @description Input track ranges to automatically select them in the relationships editor
 // @namespace   com.toadking.mb.relationship-batch-selector
 // @match       https://musicbrainz.org/release/*/edit-relationships*
-// @version     1.0
+// @match       https://beta.musicbrainz.org/release/*/edit-relationships*
+// @version     1.1
 // @author      Toad King
 // @grant       none
 // ==/UserScript==
@@ -62,16 +63,18 @@ function parseRanges() {
   return selections
 }
 
-function selectRange(selectionType) {
+function selectRange(selectionType, doClear) {
   try {
     const selections = parseRanges()
 
-    // clear all selections
-    const allItems = document.querySelector(selectionType === 'recordings' ? 'input.all-recordings' : 'input.all-works')
-    if (!allItems.checked) {
+    // clear all selections if ctrl key isn't held
+    if (doClear) {
+      const allItems = document.querySelector(selectionType === 'recordings' ? 'input.all-recordings' : 'input.all-works')
+      if (!allItems.checked) {
+        allItems.click()
+      }
       allItems.click()
     }
-    allItems.click()
 
     const recordingRows = document.querySelectorAll('#tracklist .subh, #tracklist .track')
 
@@ -94,7 +97,10 @@ function selectRange(selectionType) {
       const track = `${curMedium}.${curTrack}`
       if (selections.has(track)) {
         if (selectionType === 'recordings') {
-          row.querySelector('input.recording').click()
+          const input = row.querySelector('input.recording')
+          if (!input.checked) {
+            row.querySelector('input.recording').click()
+          }
         } else {
           const works = row.querySelectorAll('input.work')
           if (works.length === 0) {
@@ -102,7 +108,10 @@ function selectRange(selectionType) {
           } else if (works.length > 1) {
             warnings.multipleWorks.push(track)
           } else {
-            works[0].click()
+            const work = works[0]
+            if (!work.checked) {
+              work.click()
+            }
           }
         }
         selections.delete(track)
@@ -122,7 +131,7 @@ function selectRange(selectionType) {
     if (alerts.length > 0) {
       alert(alerts.join('\n\n'))
     }
-  } catch(e) {
+  } catch (e) {
     alert(e)
   }
 }
@@ -130,12 +139,12 @@ function selectRange(selectionType) {
 const recordingsBtn = document.createElement('button')
 recordingsBtn.textContent = 'Select Recordings'
 recordingsBtn.disabled = true
-recordingsBtn.addEventListener('click', () => selectRange('recordings'))
+recordingsBtn.addEventListener('click', (e) => selectRange('recordings', !e.ctrlKey))
 
 const worksBtn = document.createElement('button')
 worksBtn.textContent = 'Select Works'
 worksBtn.disabled = true
-worksBtn.addEventListener('click', () => selectRange('works'))
+worksBtn.addEventListener('click', (e) => selectRange('works', !e.ctrlKey))
 
 const releaseRelationshipEditor = document.querySelector('.release-relationship-editor')
 releaseRelationshipEditor.insertAdjacentElement('beforeBegin', expandWarning)
@@ -147,6 +156,7 @@ releaseRelationshipEditor.insertAdjacentElement('beforeBegin', document.createEl
 releaseRelationshipEditor.insertAdjacentElement('beforeBegin', recordingsBtn)
 releaseRelationshipEditor.insertAdjacentText('beforeBegin', ' ')
 releaseRelationshipEditor.insertAdjacentElement('beforeBegin', worksBtn)
+releaseRelationshipEditor.insertAdjacentText('beforeBegin', ' (Hold "Control" key when clicking buttons to append selected items instead of replacing current selection)')
 
 function callback(mutationList, observer) {
   const mediumRecordings = Array.from(document.querySelectorAll('input.medium-recordings'))
